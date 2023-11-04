@@ -8,7 +8,7 @@ const TransportSchema = new Schema({
         type : String,
         require : true,
     },
-    mode_of_tranport: {
+    mode_of_transport: {
         type : String,
         require : true,
     },

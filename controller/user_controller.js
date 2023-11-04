@@ -58,3 +58,13 @@ exports.delete = async(req, res, next)=>{
     }
 }
 
+exports.get = async(req,res,next) => {
+    try {
+        const {userid} = req.body;
+        const User = await UserServices.getUser(userid);
+        res.status(200).json(User)
+    } catch (error) {
+        next(error);
+    }
+}
+

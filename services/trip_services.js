@@ -1,6 +1,7 @@
 const TripModel = require('../model/trip_model');
+const { updateOne, findOneAndDelete } = require('../model/user_model');
 const idcode_services = require('./idcode_services');
-const user_controller = require('../controller/user_controller')
+
 
 class TripServices {
 
@@ -14,8 +15,27 @@ class TripServices {
         }
     }
 
+    static async updateTrip(userid,fname,tripid,tripname,start_date,end_date,start_point,end_point){
+
+        const query = {userid : userid};
+        const values = {$set : {fname : fname,tripid, tripname : tripname, start_date : start_date,end_date : end_date, start_point :start_point,end_point : end_point}}
+
+        return await TripModel.updateOne(query,values)
+    }
+
+    static async deleteTrip(userid){
+        const query = {userid : userid};
+        return await TripModel.findOneAndDelete(query)
+    }
+
+    static async getTrip(userid){
+        const query = {userid : userid};
+        return await TripModel.find(query);
+    }
 };
 
-//static async updateTrip(tripname,start_date,end_date,start_point,end_point)
+   
+
+
 
 module.exports = TripServices;

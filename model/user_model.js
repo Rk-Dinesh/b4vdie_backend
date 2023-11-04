@@ -55,10 +55,10 @@ const UserSchema = new Schema({
 
 UserSchema.pre('save', async function(){
     try{
-        var patient = this;
+        var user = this;
         const salt = await(bcrypt.genSalt(10));
-        const hashpass = await bcrypt.hash(patient.password,salt);
-        patient.password = hashpass;
+        const hashpass = await bcrypt.hash(user.password,salt);
+        user.password = hashpass;
 
     }catch(error){
         throw error

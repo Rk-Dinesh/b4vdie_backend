@@ -24,6 +24,7 @@ class UserServices{
         try {
             var query = {userid : userid};
             var values = {$set : {fname:fname, lname: lname, dob: dob, gender: gender, email: email, phone: phone, address: address, state: state, postcode: postcode}};
+            
             return await UserModel.updateOne(query,values)
             
         } catch (error) {
@@ -34,10 +35,19 @@ class UserServices{
     static async deleteUser(userid){
         try{
             var query = {userid : userid};
-            return await UserModel.deleteOne(query);
+            return await UserModel.findOneAndDelete(query);
 
         }catch(error){
             throw error;
+        }
+    }
+
+    static async getUser(userid){
+        try {
+            var query = {userid : userid};
+            return await UserModel.find(query)
+        } catch (error) {
+            throw error
         }
     }
 
