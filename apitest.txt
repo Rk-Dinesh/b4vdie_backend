@@ -1,0 +1,63 @@
+1. User Registration API
+
+    http://localhost:4000/registration/
+
+    {
+        "fname":"Ravikumar",
+        "lname":"S",
+        "dob":"09/06/1995",
+        "gender":"Male",
+        "email":"ravipro9e0@gmail.com",
+        "phone":"9629683500",
+        "address":"Salem",
+        "state":"Tamilnadu",
+        "postcode":"123456",
+        "password":"test"
+    }
+
+2. TRIP
+
+{
+    userid:
+    name:
+    tripid:
+    tripname:
+    start_date:
+    end_date:
+    start_point:
+    end_point:
+
+}
+3. transport
+{
+    tripid:
+    mode_of_tranport:
+    from:
+    to:
+
+}
+4. pitstop
+{
+    tripid:
+    pitstop_name:
+    pitstop_location:
+
+}
+
+5. tripalert
+{
+    tripid:
+    alerttype:
+    interval:
+}
+6. cotraveller
+{
+    tripid:
+    cotraveller_userid:
+    cotraveller_name:
+    join_location:
+}
+7. trip_images{
+    tripid:
+    img_name:
+}
