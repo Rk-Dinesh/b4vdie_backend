@@ -12,6 +12,7 @@ Give your project Name
 >> npm install express mongoose body-parser
 >> npm install bcrypt
 >> npm install nodemon
+>> npm install jsonwebtoken
 
 2. Create the Files & Folder structure given below
 
