@@ -1,20 +1,22 @@
 const PitstopModel = require('../model/pitstop_model');
+const idcode_services = require('./idcode_services');
 
 class PitstopService{
 
-    static async createPitstop(tripid,pitstop_name,pitstop_location){
+    static async createPitstop(tripid,pitstopid,pitstop_name,pitstop_location){
         try {
-           const createPits = new PitstopModel({tripid, pitstop_name : pitstop_name, pitstop_location : pitstop_location});
+            var pitstopid = await idcode_services.generateCode('PitstopId');
+           const createPits = new PitstopModel({tripid,pitstopid, pitstop_name : pitstop_name, pitstop_location : pitstop_location});
            return await createPits.save();
         } catch (error) {
             throw error;
         }
     }
 
-    static async updatepitstop(tripid,pitstop_name,pitstop_location){
+    static async updatepitstop(pitstopid,tripid,pitstop_name,pitstop_location){
         try {
-            var query = {tripid : tripid};
-            var values = {$set : {pitstop_name : pitstop_name,pitstop_location : pitstop_location}};
+            var query = {pitstopid : pitstopid};
+            var values = {$set : { tripid,pitstop_name : pitstop_name,pitstop_location : pitstop_location}};
             
             return await PitstopModel.updateOne(query,values)
             
@@ -23,10 +25,20 @@ class PitstopService{
         }
     }
 
-    static async deletepitstop(tripid){
+    static async deletepitstop(pitstopid){
+        try{
+            var query = {pitstopid : pitstopid};
+            return await PitstopModel.findOneAndDelete(query);
+
+        }catch(error){
+            throw error;
+        }
+    }
+
+    static async delete(tripid){
         try{
             var query = {tripid : tripid};
-            return await PitstopModel.findOneAndDelete(query);
+            return await PitstopModel.deleteMany(query);
 
         }catch(error){
             throw error;
@@ -35,8 +47,8 @@ class PitstopService{
 
     static async getpitstop(tripid){
         try {
-            var query = {tripid : tripid};
-            return await PitstopModel.find(query)
+            
+            return await PitstopModel.find({tripid})
         } catch (error) {
             throw error
         }

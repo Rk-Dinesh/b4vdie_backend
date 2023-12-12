@@ -1,5 +1,4 @@
 const app = require('./app')
-const TripModel = require('./model/trip_model')
 
 const port = 4000;
 

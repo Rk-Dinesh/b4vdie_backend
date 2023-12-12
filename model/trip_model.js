@@ -35,7 +35,28 @@ const TripSchema = new Schema ({
     end_point : {
         type : String,
         required : true
-    }
+    },
+    status: {
+        type : String,
+        required : true
+    },
+    orgin_lat: {
+        type : String,
+        required : true
+    },
+    orgin_lon: {
+        type : String,
+        required : true
+    },
+    des_lat: {
+        type : String,
+        required : true
+    },
+    des_lon: {
+        type : String,
+        required : true
+    },
+    
 });
 
 const TripModel = db.model('trip',TripSchema);

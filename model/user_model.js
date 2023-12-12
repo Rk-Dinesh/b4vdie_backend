@@ -1,82 +1,96 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { ObjectId } = mongoose.Schema.Types
 const db = require('../config/db');
 
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-    userid:{
+    userid: {
         type: String,
         required: true
     },
-    fname:{
+    fname: {
         type: String,
-        required : true
+        required: true
     },
-    lname:{
+    lname: {
         type: String,
-        required : true
+        required: true
     },
-    dob:{
+    dob: {
         type: String,
-        required : true
+        required: true
     },
-    gender:{
+    gender: {
         type: String,
-        required : true
+        required: true
     },
-    email:{
+    email: {
         type: String,
-        required : true,
-        unique: true    
+        required: true,
+        unique: true
     },
-    phone:{
+    phone: {
         type: String,
-        required : true
+        required: true
     },
-    address:{
+    address: {
         type: String,
-        required : true
+        required: true
     },
-    state:{
+    state: {
         type: String,
-        required : true
+        required: true
     },
-    postcode:{
+    postcode: {
         type: String,
-        required : true
+        required: true
     },
-    password:{
+    password: {
         type: String,
-        required : true
+        required: true
+    },
+    kms: {
+        type: String,
+        required: true,
+    },
+    followers: {
+        type: [String],
+    },
+    following: {
+        type: [String],
+    },
+    interest: {
+        type: [String],
     },
 
 });
 
-UserSchema.pre('save', async function(){
-    try{
+UserSchema.pre('save', async function () {
+    try {
         var user = this;
-        const salt = await(bcrypt.genSalt(10));
-        const hashpass = await bcrypt.hash(user.password,salt);
+        const salt = await (bcrypt.genSalt(10));
+        const hashpass = await bcrypt.hash(user.password, salt);
         user.password = hashpass;
 
-    }catch(error){
+    } catch (error) {
         throw error
     }
 
 });
 
 
-UserSchema.methods.comparePassword = async function(userPasword){
-    try{
+UserSchema.methods.comparePassword = async function (userPasword) {
+    try {
         const isMatch = await bcrypt.compare(userPasword, this.password);
         return isMatch;
 
-    }catch(error){
+    } catch (error) {
         throw error
     }
 }
 
-const UserModel = db.model('user',UserSchema);
+const UserModel = db.model('user', UserSchema);
 
 module.exports = UserModel;

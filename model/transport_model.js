@@ -4,6 +4,10 @@ const db = require('../config/db');
 const {Schema} = mongoose;
 
 const TransportSchema = new Schema({
+    transportid : {
+        type : String,
+        require : true,
+    },
     tripid : {
         type : String,
         require : true,

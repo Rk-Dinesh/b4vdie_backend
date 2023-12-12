@@ -1,19 +1,21 @@
 const TransportModel = require('../model/transport_model');
+const idcode_services = require('./idcode_services');
 
 class TransportServices {
-        static async createtransport(tripid,mode_of_transport,from,to){
+        static async createtransport(transportid,tripid,mode_of_transport,from,to){
             try {
-                const transport = new TransportModel({tripid,mode_of_transport,from,to});
+                var transportid = await idcode_services.generateCode('TransportId');
+                const transport = new TransportModel({transportid,tripid,mode_of_transport,from,to});
                 return await transport.save();
             } catch (error) {
                 throw error;
             }
         }
 
-        static async updatetransport(tripid,mode_of_transport,from,to){
+        static async updatetransport(transportid,tripid,mode_of_transport,from,to){
             try {
-                const query = {tripid : tripid};
-                const values = {$set : {mode_of_transport : mode_of_transport, from : from, to : to}};
+                const query = {transportid : transportid};
+                const values = {$set : {tripid,mode_of_transport : mode_of_transport, from : from, to : to}};
                 
                 return await TransportModel.updateOne(query,values)
 
@@ -22,9 +24,9 @@ class TransportServices {
             }
         }
 
-        static async deletetransport(tripid){
+        static async deletetransport(transportid){
             try {
-                const query = {tripid : tripid};
+                const query = {transportid : transportid};
                 return await TransportModel.findOneAndDelete(query);
 
             } catch (error) {
@@ -32,10 +34,20 @@ class TransportServices {
             }
         }
 
+        static async delete(tripid){
+            try{
+                var query = {tripid : tripid};
+                return await TransportModel.deleteMany(query);
+    
+            }catch(error){
+                throw error;
+            }
+        }
+
         static async gettransport(tripid){
             try {
-                const query = {tripid : tripid};
-                return await TransportModel.find(query)
+                
+                return await TransportModel.find({tripid})
             } catch (error) {
                 throw error;
             }

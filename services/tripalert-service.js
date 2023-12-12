@@ -1,19 +1,21 @@
 const TripAlertModel = require('../model/tripalert_model');
+const idcode_services = require('./idcode_services');
 
 class TripAlertService{
-    static async createTripAlert(tripid,alerttype,interval){
+    static async createTripAlert(alertid,tripid,alerttype,interval){
         try {
-            const newTripAlert = new TripAlertModel({tripid,alerttype:alerttype, interval:interval});
+            var alertid = await idcode_services.generateCode('AlertId');
+            const newTripAlert = new TripAlertModel({alertid,tripid,alerttype:alerttype, interval:interval});
             return await newTripAlert.save();
         } catch (error) {
             throw error;
         }
     }
 
-    static async updateTripAlert(tripid,alerttype,interval){
+    static async updateTripAlert(alertid,tripid,alerttype,interval){
         try {
-            var query = {tripid : tripid};
-            var values = {$set : {alerttype : alerttype, interval : interval}};
+            var query = {alertid : alertid};
+            var values = {$set : {tripid,alerttype : alerttype, interval : interval}};
             
             return await TripAlertModel.updateOne(query,values)
             
@@ -22,10 +24,20 @@ class TripAlertService{
         }
     }
 
-    static async deleteTripAlert(tripid){
+    static async deleteTripAlert(alertid){
+        try{
+            var query = {alertid : alertid};
+            return await TripAlertModel.findOneAndDelete(query);
+
+        }catch(error){
+            throw error;
+        }
+    }
+
+    static async delete(tripid){
         try{
             var query = {tripid : tripid};
-            return await TripAlertModel.findOneAndDelete(query);
+            return await TripAlertModel.deleteMany(query);
 
         }catch(error){
             throw error;
@@ -34,8 +46,8 @@ class TripAlertService{
 
     static async getTripAlert(tripid){
         try {
-            var query = {tripid : tripid};
-            return await TripAlertModel.find(query)
+            
+            return await TripAlertModel.find({tripid})
         } catch (error) {
             throw error
         }

@@ -4,6 +4,10 @@ const db = require('../config/db');
 const {Schema} = mongoose;
 
 const PitstopSchema = new Schema({
+    pitstopid : {
+        type : String,
+        required : true,
+    },
     tripid : {
         type : String,
         required : true,

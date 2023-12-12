@@ -2,10 +2,10 @@ const TransportServices = require('../services/transport_services');
 
 exports.transport = async(req,res,next) => {
     try {
-        const {tripid,mode_of_transport,from,to} = req.body;
+        const {transportid,tripid,mode_of_transport,from,to} = req.body;
 
-        const Data = TransportServices.createtransport(tripid,mode_of_transport,from,to);
-        let transportData = {tripid,mode_of_transport : mode_of_transport,from : from,to : to};
+        const Data = TransportServices.createtransport(transportid,tripid,mode_of_transport,from,to);
+        let transportData = {transportid,tripid,mode_of_transport : mode_of_transport,from : from,to : to};
 
         res.status(200).json(transportData);
 
@@ -16,9 +16,9 @@ exports.transport = async(req,res,next) => {
 
 exports.update = async (req,res,next) => {
     try {
-        const {tripid,mode_of_transport,from,to} = req.body;
+        const {transportid,tripid,mode_of_transport,from,to} = req.body;
 
-        const updateData = await TransportServices.updatetransport(tripid,mode_of_transport,from,to);
+        const updateData = await TransportServices.updatetransport(transportid,tripid,mode_of_transport,from,to);
 
         res.status(200).json(updateData);
     } catch (error) {
@@ -28,9 +28,9 @@ exports.update = async (req,res,next) => {
 
 exports.delete = async (req,res,next) => {
     try {
-        const {tripid} = req.body;
+        const {transportid} = req.query;
 
-        const deleteData = await TransportServices.deletetransport(tripid);
+        const deleteData = await TransportServices.deletetransport(transportid);
         res.status(200).json(deleteData);
 
     } catch (error) {
@@ -38,11 +38,22 @@ exports.delete = async (req,res,next) => {
     }
 }
 
+exports.deletetransport = async(req, res, next)=>{
+    try{
+        const{tripid} = req.query;
+        const deleteData = await TransportServices.delete(tripid);
+        res.status(200).json(deleteData)
+    }catch(error){
+        next(error)
+    }
+}
+
 exports.get = async (req,res,next) => {
     try {
-        const {tripid} = req.body;
+        const {tripid} = req.query;
         const getData = await TransportServices.gettransport(tripid);
-        res.status(200).json(getData)
+       // res.status(200).json(getData)
+        res.status(200).json({tokens : getData})
     } catch (error) {
         next(error)
     }
