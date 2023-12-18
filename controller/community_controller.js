@@ -1,3 +1,4 @@
+const UserModel = require('../model/user_model');
 const CommunityService = require('../services/community_service');
 
 exports.community = async(req,res,next) => {
@@ -87,3 +88,25 @@ exports.delete = async(req, res, next)=>{
         next(error)
     }
 }
+
+exports.getfollowersDetails = async (req, res, next) => {
+    try {
+      const loggedInUserId = req.params.loggedInUserId; 
+      const loggedInUser = await UserModel.findOne({ userid: loggedInUserId });
+  
+      if (!loggedInUser) {
+        return res.status(404).json({ message: ' user not found' });
+      }
+  
+      const allUsers = await CommunityService.get();
+      const Post = allUsers.filter(user => loggedInUser.followers.includes(user.userid));
+  
+      if (Post.length > 0) {
+        res.json({ Posts: Post });
+      } else {
+        res.status(404).json({ message: 'No followers' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };

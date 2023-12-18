@@ -104,6 +104,7 @@ router.get('/getcommunity', CommunityController.getcommunity);
 router.get('/getonecommunitypost', CommunityController.getOneCommunityPost);
 router.post('/likecommunity/:community_id',CommunityController.like);
 router.post('/unlikecommunity/:community_id',CommunityController.unlike);
+router.get('/post/:loggedInUserId', CommunityController.getfollowersDetails);
 
 router.post('/uploadclub', club, ClubController.createClub);
 router.put('/updateimage', club, ClubController.updateImage);

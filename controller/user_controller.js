@@ -103,49 +103,7 @@ exports.updatecover= async (req, res, next) => {
     }
 };
 
-exports.getfollowersDetails = async (req, res, next) => {
-    try {
-      const loggedInUserId = req.params.loggedInUserId; 
-      const loggedInUser = await UserModel.findOne({ userid: loggedInUserId });
-  
-      if (!loggedInUser) {
-        return res.status(404).json({ message: ' user not found' });
-      }
-  
-      const allUsers = await UserServices.getUser();
-      const followedUsers = allUsers.filter(user => loggedInUser.followers.includes(user.userid));
-  
-      if (followedUsers.length > 0) {
-        res.json({ users: followedUsers });
-      } else {
-        res.status(404).json({ message: 'No followers' });
-      }
-    } catch (error) {
-      next(error);
-    }
-  };
 
-  exports.getfollowingDetails = async (req, res, next) => {
-    try {
-      const loggedInUserId = req.params.loggedInUserId; 
-      const loggedInUser = await UserModel.findOne({ userid: loggedInUserId });
-  
-      if (!loggedInUser) {
-        return res.status(404).json({ message: ' user not found' });
-      }
-  
-      const allUsers = await UserServices.getUser();
-      const followedUsers = allUsers.filter(user => loggedInUser.following.includes(user.userid));
-  
-      if (followedUsers.length > 0) {
-        res.json({ users: followedUsers });
-      } else {
-        res.status(404).json({ message: 'No followers' });
-      }
-    } catch (error) {
-      next(error);
-    }
-  };
   
 
 exports.follow = async (req, res) => {
@@ -261,3 +219,47 @@ exports.getUserId = async(req,res,next) => {
         next(error);
     }
 }
+
+exports.getfollowersDetails = async (req, res, next) => {
+    try {
+      const loggedInUserId = req.params.loggedInUserId; 
+      const loggedInUser = await UserModel.findOne({ userid: loggedInUserId });
+  
+      if (!loggedInUser) {
+        return res.status(404).json({ message: ' user not found' });
+      }
+  
+      const allUsers = await UserServices.getUser();
+      const followedUsers = allUsers.filter(user => loggedInUser.followers.includes(user.userid));
+  
+      if (followedUsers.length > 0) {
+        res.json({ users: followedUsers });
+      } else {
+        res.status(404).json({ message: 'No followers' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  exports.getfollowingDetails = async (req, res, next) => {
+    try {
+      const loggedInUserId = req.params.loggedInUserId; 
+      const loggedInUser = await UserModel.findOne({ userid: loggedInUserId });
+  
+      if (!loggedInUser) {
+        return res.status(404).json({ message: ' user not found' });
+      }
+  
+      const allUsers = await UserServices.getUser();
+      const followedUsers = allUsers.filter(user => loggedInUser.following.includes(user.userid));
+  
+      if (followedUsers.length > 0) {
+        res.json({ users: followedUsers });
+      } else {
+        res.status(404).json({ message: 'No followers' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
