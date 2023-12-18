@@ -4,15 +4,19 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 
 class UserServices {
-    static async registerUser(fname, lname, dob, gender, email, phone, address, state, postcode, password, kms, followers, following,interest) {
+    static async registerUser(fname, lname, dob, gender, email, phone, address, state, postcode, password, kms, followers, following,interest,userimage,coverimage) {
         try {
             var userid = await IdcodeServices.generateCode("Trip");
-            const createUser = new UserModel({ userid, fname, lname, dob, gender, email, phone, address, state, postcode, password, kms, followers, following,interest });
+            const createUser = new UserModel({ userid, fname, lname, dob, gender, email, phone, address, state, postcode, password, kms, followers, following,interest ,userimage,coverimage});
             return await createUser.save();
         } catch (err) {
             throw err;
         }
     }
+
+    // static async filterUserDetails  (userData, userIds) {
+    //     return await  userData.filter(user => userIds.includes(user.userid));
+    //   };
 
     static async loginUser(phone) {
         try {
@@ -22,10 +26,10 @@ class UserServices {
         }
     }
 
-    static async updateUser(userid, fname, lname, dob, gender, email, phone,kms,followers,following,interest, address, state, postcode) {
+    static async updateUser(userid, fname, lname, dob, gender, email, phone, address, state, postcode,kms) {
         try {
             var query = { userid: userid };
-            var values = { $set: { fname: fname, lname: lname, dob: dob, gender: gender, email: email, phone: phone, address: address, state: state, postcode: postcode,kms:kms,followers:followers,following:following,interest:interest } };
+            var values = { $set: { fname: fname, lname: lname, dob: dob, gender: gender, email: email, phone: phone, address: address, state: state, postcode: postcode,kms:kms } };
 
             return await UserModel.updateOne(query, values)
 
@@ -34,7 +38,31 @@ class UserServices {
         }
     }
 
+    static async updateImages(userid,userimage) {
+        try {
+            const updateimage = await UserModel.findOneAndUpdate(
+                { userid },
+                { $set: {userimage } },
+                { new: true }
+            );
+            return updateimage;
+        } catch (error) {
+            throw error;
+        }
+    }
 
+    static async updatecover(userid,coverimage) {
+        try {
+            const updatedCover= await UserModel.findOneAndUpdate(
+                { userid },
+                { $set: {coverimage } },
+                { new: true }
+            );
+            return updatedCover;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     static async followUser(loggedUserId, followedUserId) {
         try {

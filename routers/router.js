@@ -25,7 +25,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage }).single('Profile');
 const community = multer({ storage: storage }).single('image');
-const club = multer({ storage: storage }).single('clubimage');
+const user = multer({ storage: storage }).fields([
+    { name: 'userimage', maxCount: 1 },
+    { name: 'coverimage', maxCount: 1 },
+]);
+const club = multer({ storage: storage }).fields([
+    { name: 'clubimage', maxCount: 1 },
+    { name: 'clubcover', maxCount: 1 },
+]);
 const clubpost = multer({ storage: storage }).single('clubpostimage');
 
 router.post('/upload', upload, ImageController.image);
@@ -45,16 +52,20 @@ router.get('/getemail', AdminController.getEmail);
 router.put('/updateadmin', AdminController.Update);
 router.delete('/deleteadmin', AdminController.delete);
 
-router.post('/registration', userController.register);
+router.post('/registration',user, userController.register);
 router.post('/login', userController.login);
 router.get('/getuser', userController.get)
 router.get('/get', userController.getUser)
 router.get('/getUserId', userController.getUserId);
 router.put('/update', userController.Update);
+router.put('/updateimageuser', user,userController.updateImage );
+router.put('/updatecoveruser', user,userController.updatecover);
 router.post('/follow/:followedUserId',userController.follow)
 router.post('/unfollow/:followedUserId',userController.unfollow)
 router.post('/interst/:userid',userController.addInterest);
 router.delete('/delete', userController.delete);
+router.get('/followers/:loggedInUserId', userController.getfollowersDetails);
+router.get('/following/:loggedInUserId', userController.getfollowingDetails);
 
 router.post('/createtrip', tripController.trip);
 router.get('/gettrip', tripController.get);
@@ -94,7 +105,10 @@ router.get('/getonecommunitypost', CommunityController.getOneCommunityPost);
 router.post('/likecommunity/:community_id',CommunityController.like);
 router.post('/unlikecommunity/:community_id',CommunityController.unlike);
 
-router.post('/uploadclub', club, ClubController.club);
+router.post('/uploadclub', club, ClubController.createClub);
+router.put('/updateimage', club, ClubController.updateImage);
+router.put('/updatecover', club, ClubController.updatecover);
+router.put('/updatename', club, ClubController.update);
 router.delete('/deleteclub', ClubController.delete);
 router.get('/getclubId', ClubController.get);
 router.get('/getclub', ClubController.getclub);

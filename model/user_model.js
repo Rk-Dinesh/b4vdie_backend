@@ -64,6 +64,14 @@ const UserSchema = new Schema({
     interest: {
         type: [String],
     },
+    userimage : {
+        type : String,
+        required : true,
+    },
+    coverimage: { 
+        type: String,
+        required: true,
+    }
 
 });
 

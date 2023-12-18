@@ -5,6 +5,7 @@ const UserModel = require("../model/user_model");
 exports.register = async (req, res, next) => {
     try {
         const { userid, fname, lname, dob, gender, email, phone, address, state, postcode, password,kms,followers,following,interest } = req.body;
+        const { userimage, coverimage } = req.files;
 
         const user = await UserServices.checkuser(phone);
 
@@ -12,10 +13,10 @@ exports.register = async (req, res, next) => {
          return res.status(400).json({message : "user already exist"})
         }
 
-        const successRes = await UserServices.registerUser(fname, lname, dob, gender, email, phone, address, state, postcode, password,kms,followers,following,interest);
-        let userData = { userid : successRes.userid, fname: fname, lname: lname, dob: dob, gender: gender, email: email, phone: phone, address: address, state: state, postcode: postcode,kms:kms,followers:followers,following:following,interest : interest };
+        const successRes = await UserServices.registerUser(fname, lname, dob, gender, email, phone, address, state, postcode, password,kms,followers,following,interest,userimage[0].filename, coverimage[0].filename);
+        let userData = { userid : successRes.userid, fname: fname, lname: lname, dob: dob, gender: gender, email: email, phone: phone, address: address, state: state, postcode: postcode,kms:kms,followers:followers,following:following,interest : interest ,userimage: userimage[0].filename,coverimage: coverimage[0].filename};
         console.log(userData);
-        res.status(200).json(userData)
+       return  res.status(200).json(userData)
 
     } catch (error) {
         throw error
@@ -50,14 +51,102 @@ exports.login = async (req, res, next) => {
 
 exports.Update = async (req,res, next) => {
     try {
-        const { userid, fname, lname, dob, gender, email, phone,kms,followers,following,interest, address, state, postcode} = req.body;
-        const updateData = await UserServices.updateUser(userid, fname, lname, dob, gender, email, phone,kms, address,followers,following,interest, state, postcode);
+        const { userid, fname, lname, dob, gender, email, phone, address, state, postcode,kms} = req.body;
+        const updateData = await UserServices.updateUser(userid, fname, lname, dob, gender, email, phone,address,state, postcode,kms);
         res.status(200).json(updateData)
     } catch (error) {
         next (error);
     }
 
 }
+
+exports.updateImage = async (req, res, next) => {
+    try {
+        const { userid } = req.query;
+        const { userimage} = req.files;
+
+        const updateimage = await UserServices.updateImages(
+            userid,
+            userimage[0].filename,
+            
+        );
+
+        const data = {
+            userid,
+            userimage: userimage[0].filename,
+        };
+
+        res.status(200).json(data);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.updatecover= async (req, res, next) => {
+    try {
+        const { userid } = req.query;
+        const { coverimage } = req.files;
+
+        const updatedCover= await UserServices.updatecover(
+            userid,
+            coverimage[0].filename
+        );
+
+        const data = {
+            userid,
+            coverimage: coverimage[0].filename
+        };
+
+        res.status(200).json(data);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getfollowersDetails = async (req, res, next) => {
+    try {
+      const loggedInUserId = req.params.loggedInUserId; 
+      const loggedInUser = await UserModel.findOne({ userid: loggedInUserId });
+  
+      if (!loggedInUser) {
+        return res.status(404).json({ message: ' user not found' });
+      }
+  
+      const allUsers = await UserServices.getUser();
+      const followedUsers = allUsers.filter(user => loggedInUser.followers.includes(user.userid));
+  
+      if (followedUsers.length > 0) {
+        res.json({ users: followedUsers });
+      } else {
+        res.status(404).json({ message: 'No followers' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  exports.getfollowingDetails = async (req, res, next) => {
+    try {
+      const loggedInUserId = req.params.loggedInUserId; 
+      const loggedInUser = await UserModel.findOne({ userid: loggedInUserId });
+  
+      if (!loggedInUser) {
+        return res.status(404).json({ message: ' user not found' });
+      }
+  
+      const allUsers = await UserServices.getUser();
+      const followedUsers = allUsers.filter(user => loggedInUser.following.includes(user.userid));
+  
+      if (followedUsers.length > 0) {
+        res.json({ users: followedUsers });
+      } else {
+        res.status(404).json({ message: 'No followers' });
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+  
 
 exports.follow = async (req, res) => {
     try {

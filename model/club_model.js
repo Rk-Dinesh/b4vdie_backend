@@ -24,6 +24,10 @@ const ClubSchema = new Schema({
     clubimage : {
         type : String,
         required : true,
+    },
+    clubcoverimage: { 
+        type: String,
+        required: true,
     }
 });
 
