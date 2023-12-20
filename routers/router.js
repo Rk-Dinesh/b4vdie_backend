@@ -15,6 +15,7 @@ const ImageController = require('../controller/image_controller');
 const CommunityController = require('../controller/community_controller');
 const ClubController = require('../controller/club_controller');
 const ClubPostController = require('../controller/clubpost_controller')
+const otpController = require('../controller/otp_controller');
 
 const storage = multer.diskStorage({
     destination: 'img',
@@ -46,11 +47,13 @@ router.post('/idcode', idcodeController.idcode);
 
 router.post('/admin', AdminController.register);
 router.post('/adminlogin', AdminController.login);
+router.post('/checkuser', AdminController.checkUser);
 router.get('/getadmin', AdminController.get)
 router.get('/getadmin1', AdminController.getAdmin);
 router.get('/getemail', AdminController.getEmail);
 router.put('/updateadmin', AdminController.Update);
 router.delete('/deleteadmin', AdminController.delete);
+router.put('/updatePassword/:email', AdminController.UpdatePassword);
 
 router.post('/registration',user, userController.register);
 router.post('/login', userController.login);
@@ -121,5 +124,8 @@ router.get('/getonepost', ClubPostController.getOnePost);
 router.post('/like/:clubpost_id',ClubPostController.like);
 router.post('/unlike/:clubpost_id',ClubPostController.unlike);
 router.post('/comment/:clubpost_id',ClubPostController.addComment);
+
+router.post('/otp',otpController.generateOTP);
+router.post('/verifyotp',otpController.verify);
 
 module.exports = router;

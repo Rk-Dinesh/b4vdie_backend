@@ -1,5 +1,6 @@
 const AdminModel =require('../model/admin_model');
 const IdcodeServices = require("./idcode_services");
+const bcrypt = require('bcrypt');
 
 class AdminServices{
     static async registerAdmin(fname,lname,email,phone,role,password){
@@ -19,6 +20,15 @@ class AdminServices{
             throw error;
         }
     }
+
+    static async checkIfUserExists(email) {
+        try {
+          const user = await AdminModel.findOne({ email });
+          return !!user; 
+        } catch (error) {
+          throw new Error('Error checking user existence');
+        }
+      };
 
     static async updateAdmin(userid,fname,lname,email,phone,role){
         try {
@@ -67,6 +77,26 @@ class AdminServices{
             throw error
         }
     }
+
+    static async updatePassword(email, newPassword) {
+        try {
+            const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+            const updatedDoctor = await AdminModel.findOneAndUpdate(
+                { email: email },
+                {
+                    $set: {
+                        password: newPasswordHash,
+                    }
+                },
+                { new: true }
+            );
+
+            return updatedDoctor;
+        } catch (err) {
+            throw new Error('An error occurred while updating the doctor: ' + err.message);
+        }
+    };
 
   
 }

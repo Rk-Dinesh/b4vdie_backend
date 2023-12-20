@@ -38,6 +38,22 @@ exports.login = async (req, res, next) => {
     }
 }
 
+exports.checkUser = async (req, res) => {
+    const { email } = req.body;
+  
+    try {
+      const userExists = await AdminServices.checkIfUserExists(email);
+  
+      if (userExists) {
+        res.status(200).json({ exists: true, message: 'User exists' });
+      } else {
+        res.status(404).json({ exists: false, message: 'User does not exist' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Error checking user existence', error: error.message });
+    }
+  };
+
 exports.Update = async (req,res, next) => {
     try {
         const { userid, fname, lname, email, phone, role} = req.body;
@@ -87,3 +103,20 @@ exports.getEmail = async(req,res,next) => {
         next(error);
     }
 }
+
+exports.UpdatePassword = async (req, res) => {
+    const email = req.params.email;
+    const newPassword = req.body.password;
+
+    try {
+        const updatedDoctor = await AdminServices.updatePassword(email, newPassword);
+
+        if (!updatedDoctor) {
+            return res.status(404).json({ message: 'Doctor not found' });
+        }
+
+        res.json(updatedDoctor);
+    } catch (err) {
+        res.status(500).json({ message: 'An error occurred while updating the doctor', error: err.message });
+    }
+};

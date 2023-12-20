@@ -40,7 +40,7 @@ exports.login = async (req, res, next) => {
 
         // const token = jwt.sign({ email: email, role: 'user' }, 'Hackwit', { expiresIn: '1h' });
 
-        let tokenData = {fname: User.fname,userid:User.userid,phone:User.phone,lname:User.lname,dob:User.dob,address:User.address,gender:User.gender,email:User.email,postcode:User.postcode,kms:User.kms,followers:User.followers,following:User.following,interest:User.interest}
+        let tokenData = {fname: User.fname,userid:User.userid,phone:User.phone,lname:User.lname,dob:User.dob,address:User.address,gender:User.gender,email:User.email,postcode:User.postcode,kms:User.kms,followers:User.followers,following:User.following,interest:User.interest,userimage: User.userimage,coverimage: User.coverimage}
 
         return res.status(200).json(tokenData);
 
@@ -108,8 +108,10 @@ exports.updatecover= async (req, res, next) => {
 
 exports.follow = async (req, res) => {
     try {
-        const { loggedUserId } = req.body;
 
+        console.log(req.body);
+        const { loggedUserId } = req.body;
+        
         const result = await UserServices.followUser(loggedUserId, req.params.followedUserId);
 
         if (result.success) {

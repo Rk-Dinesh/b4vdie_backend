@@ -67,8 +67,9 @@ class UserServices {
     static async followUser(loggedUserId, followedUserId) {
         try {
             const loggedUser = await UserModel.findOne({ userid: loggedUserId });
+            //console.log('loggeduser',loggedUser)
             const followedUser = await UserModel.findOne({ userid: followedUserId });
-
+           
             if (!loggedUser || !followedUser) {
                 return { success: false, message: 'User not found' };
             }
@@ -114,8 +115,8 @@ class UserServices {
             if (!User) {
                 return { success: false, message: 'User not found' };
             }
-    
-            User.interest.push( interest );
+   
+            User.interest.push( ...interest );
             await User.save();
     
             return { success: true, message: 'Interest added successfully', User };
