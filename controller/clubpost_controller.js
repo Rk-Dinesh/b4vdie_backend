@@ -69,7 +69,17 @@ exports.addComment = async (req, res) => {
 exports.delete = async (req, res, next) => {
     try {
         const { clubpost_id } = req.query;
-        const post = await ClubPostServices.deletePost(clubpost_id);
+        const post = await ClubPostServices.clubpost_id(clubpost_id);
+        res.status(200).json(post)
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.deleteid = async (req, res, next) => {
+    try {
+        const { club_id } = req.query;
+        const post = await ClubPostServices.club_id(club_id);
         res.status(200).json(post)
     } catch (error) {
         next(error)

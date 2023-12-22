@@ -2,15 +2,16 @@ const ClubService = require('../services/club_services');
 
 exports.createClub = async (req, res, next) => {
     try {
-        const { userid, clubname, clubdesc } = req.body;
+        const { userid, clubname, clubdesc ,followers} = req.body;
         const { clubimage, clubcover } = req.files;
-        const club = await ClubService.createClub(userid, clubname, clubdesc, clubimage[0].filename, clubcover[0].filename);
+        const club = await ClubService.createClub(userid, clubname, clubdesc,followers, clubimage[0].filename, clubcover[0].filename);
 
         const data = {
             userid,
             club_id: club.club_id,
             clubname,
             clubdesc,
+            followers,
             clubimage: clubimage[0].filename,
             clubcoverimage: clubcover[0].filename
         };
@@ -116,3 +117,39 @@ exports.getclub = async(req,res,next) => {
         next(error);
     }
 }
+
+exports.follow = async (req, res) => {
+    try {
+
+        console.log(req.body);
+        const { loggedUserId } = req.body;
+        
+        const result = await ClubService.followClub(loggedUserId, req.params.followedClubId);
+
+        if (result.success) {
+            res.status(200).json({ message: 'Successfully followed club' });
+        } else {
+            res.status(404).json({ message: result.message });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+exports.unfollow = async (req, res) => {
+    try {
+
+        console.log(req.body);
+        const { loggedUserId } = req.body;
+        
+        const result = await ClubService.unfollowClub(loggedUserId, req.params.followedClubId);
+
+        if (result.success) {
+            res.status(200).json({ message: 'Successfully unfollowed club' });
+        } else {
+            res.status(404).json({ message: result.message });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};

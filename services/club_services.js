@@ -1,9 +1,10 @@
 const ClubModel = require('../model/club_model');
+const UserModel = require('../model/user_model');
 const IdcodeServices = require('../services/idcode_services')
 
 class ClubService {
 
-    static async createClub(userid, clubname, clubdesc, clubimage, clubcoverimage) {
+    static async createClub(userid, clubname, clubdesc,followers, clubimage, clubcoverimage) {
         try {
             const club_id = await IdcodeServices.generateCode("ClubId");
             const newClub = new ClubModel({
@@ -11,6 +12,7 @@ class ClubService {
                 club_id,
                 clubname,
                 clubdesc,
+                followers, 
                 clubimage,
                 clubcoverimage
             });
@@ -87,6 +89,46 @@ class ClubService {
             throw error
         }
     }
+
+    static async followClub(loggedUserId, followedClubId) {
+        try {
+            const loggedUser = await UserModel.findOne({ userid: loggedUserId });
+           
+            const followedClub = await ClubModel.findOne({ club_id: followedClubId });
+            
+           
+            if (!loggedUser || !followedClub) {
+                return { success: false, message: 'User not found' };
+            }
+
+            followedClub.followers.push(loggedUserId);
+            await followedClub.save();
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, message: 'Internal server error' };
+        }
+    };
+    
+    static async unfollowClub(loggedUserId, followedClubId) {
+        try {
+            const loggedUser = await UserModel.findOne({ userid: loggedUserId });
+           
+            const followedClub = await ClubModel.findOne({ club_id: followedClubId });
+            
+           
+            if (!loggedUser || !followedClub) {
+                return { success: false, message: 'User not found' };
+            }
+
+            followedClub.followers.pull(loggedUserId);
+            await followedClub.save();
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, message: 'Internal server error' };
+        }
+    };
 
 
 };

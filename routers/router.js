@@ -116,9 +116,12 @@ router.put('/updatename', club, ClubController.update);
 router.delete('/deleteclub', ClubController.delete);
 router.get('/getclubId', ClubController.get);
 router.get('/getclub', ClubController.getclub);
+router.post('/clubfollow/:followedClubId',ClubController.follow);
+router.post('/clubunfollow/:followedClubId',ClubController.unfollow)
 
 router.post('/clubpost',clubpost, ClubPostController.createpost);
 router.delete('/deleteclubpost', ClubPostController.delete);
+router.delete('/deleteclubpostid', ClubPostController.deleteid);
 router.get('/getclubpostId', ClubPostController.getPost);
 router.get('/getonepost', ClubPostController.getOnePost);
 router.post('/like/:clubpost_id',ClubPostController.like);

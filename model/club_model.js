@@ -21,6 +21,9 @@ const ClubSchema = new Schema({
         type : String,
         required : true,
     },
+    followers: {
+        type: [String],
+    },
     clubimage : {
         type : String,
         required : true,

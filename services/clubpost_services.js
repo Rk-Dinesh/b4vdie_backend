@@ -81,6 +81,16 @@ class ClubPostServices {
         }
     }
 
+    static async club_id(club_id) {
+        try {
+            var query = { club_id: club_id };
+            return await ClubPostModel.findOneAndDelete(query);
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
     static async get(club_id) {
         try {
 
