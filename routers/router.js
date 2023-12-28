@@ -65,7 +65,7 @@ router.put('/updateimageuser', user,userController.updateImage );
 router.put('/updatecoveruser', user,userController.updatecover);
 router.post('/follow/:followedUserId',userController.follow)
 router.post('/unfollow/:followedUserId',userController.unfollow)
-router.post('/interst/:userid',userController.addInterest);
+router.post('/interest/:userid',userController.addInterest);
 router.delete('/delete', userController.delete);
 router.get('/followers/:loggedInUserId', userController.getfollowersDetails);
 router.get('/following/:loggedInUserId', userController.getfollowingDetails);
