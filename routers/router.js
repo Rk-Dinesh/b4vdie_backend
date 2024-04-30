@@ -16,6 +16,7 @@ const CommunityController = require('../controller/community_controller');
 const ClubController = require('../controller/club_controller');
 const ClubPostController = require('../controller/clubpost_controller')
 const otpController = require('../controller/otp_controller');
+const ChatController = require('../controller/chat_controller')
 
 const storage = multer.diskStorage({
     destination: 'img',
@@ -130,5 +131,9 @@ router.post('/comment/:clubpost_id',ClubPostController.addComment);
 
 router.post('/otp',otpController.generateOTP);
 router.post('/verifyotp',otpController.verify);
+
+router.post('/chat',ChatController.Chat);
+router.get('/chatget',ChatController.get);
+router.get('/chatall',ChatController.getChat);
 
 module.exports = router;
