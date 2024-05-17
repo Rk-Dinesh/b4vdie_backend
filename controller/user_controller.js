@@ -1,6 +1,8 @@
 const UserServices = require("../services/user_services");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../model/user_model");
+const path = require('path');
+const fs = require('fs');
 
 exports.register = async (req, res, next) => {
     try {
@@ -15,11 +17,11 @@ exports.register = async (req, res, next) => {
 
         const successRes = await UserServices.registerUser(fname, lname, dob, gender, email, phone, address, state, postcode, password,kms,followers,following,interest,userimage[0].filename, coverimage[0].filename);
         let userData = { userid : successRes.userid, fname: fname, lname: lname, dob: dob, gender: gender, email: email, phone: phone, address: address, state: state, postcode: postcode,kms:kms,followers:followers,following:following,interest : interest ,userimage: userimage[0].filename,coverimage: coverimage[0].filename};
-        console.log(userData);
+        
        return  res.status(200).json(userData)
 
     } catch (error) {
-        throw error
+        next (error)
     }
 }
 
@@ -65,7 +67,7 @@ exports.updateImage = async (req, res, next) => {
         const { userid } = req.query;
         const { userimage} = req.files;
 
-        const updateimage = await UserServices.updateImages(
+        const {updateimage,oldImage} = await UserServices.updateImages(
             userid,
             userimage[0].filename,
             
@@ -75,6 +77,15 @@ exports.updateImage = async (req, res, next) => {
             userid,
             userimage: userimage[0].filename,
         };
+
+        if (oldImage) {
+            const oldImagePath = path.join(__dirname, '../image', oldImage);
+            fs.unlink(oldImagePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting old image file: ${err.message}`);
+                }
+            });
+        }
 
         res.status(200).json(data);
     } catch (error) {
@@ -87,7 +98,7 @@ exports.updatecover= async (req, res, next) => {
         const { userid } = req.query;
         const { coverimage } = req.files;
 
-        const updatedCover= await UserServices.updatecover(
+        const {updatedCover,oldImage}= await UserServices.updatecover(
             userid,
             coverimage[0].filename
         );
@@ -96,6 +107,15 @@ exports.updatecover= async (req, res, next) => {
             userid,
             coverimage: coverimage[0].filename
         };
+
+        if (oldImage) {
+            const oldImagePath = path.join(__dirname, '../image', oldImage);
+            fs.unlink(oldImagePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting old image file: ${err.message}`);
+                }
+            });
+        }
 
         res.status(200).json(data);
     } catch (error) {
@@ -187,6 +207,22 @@ exports.delete = async(req, res, next)=>{
     try{
         const{userid} = req.query;
         const User = await UserServices.deleteUser(userid);
+
+        if (User) {
+            const imagePaths = [
+                path.join(__dirname, '../image', User.userimage),
+                path.join(__dirname, '../image', User.coverimage)
+            ];
+
+            imagePaths.forEach(filePath => {
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error(`Error deleting file: ${err.message}`);
+                    }
+                });
+            });
+        }
+
         res.status(200).json(User)
     }catch(error){
         next(error)

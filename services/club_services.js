@@ -22,27 +22,38 @@ class ClubService {
         }
     }
 
-    static async updateImages(club_id,clubimage) {
+    static async updateImages(club_id, clubimage) {
         try {
+            const club = await ClubModel.findOne({ club_id });
+            if (!club) {
+                throw new Error("Club not found");
+            }
+            const oldImage = club.clubimage;
             const updatedClub = await ClubModel.findOneAndUpdate(
                 { club_id },
-                { $set: {clubimage } },
+                { $set: { clubimage } },
                 { new: true }
             );
-            return updatedClub;
+            return { updatedClub, oldImage };
         } catch (error) {
             throw error;
         }
     }
+    
 
     static async updatecover(club_id,clubcoverimage) {
         try {
+            const club = await ClubModel.findOne({ club_id });
+            if (!club) {
+                throw new Error("Club not found");
+            }
+            const oldImage = club.clubcoverimage;
             const updatedClub = await ClubModel.findOneAndUpdate(
                 { club_id },
                 { $set: {clubcoverimage } },
                 { new: true }
             );
-            return updatedClub;
+            return { updatedClub, oldImage };
         } catch (error) {
             throw error;
         }

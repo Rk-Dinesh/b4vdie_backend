@@ -14,9 +14,6 @@ class UserServices {
         }
     }
 
-    // static async filterUserDetails  (userData, userIds) {
-    //     return await  userData.filter(user => userIds.includes(user.userid));
-    //   };
 
     static async loginUser(phone) {
         try {
@@ -40,12 +37,17 @@ class UserServices {
 
     static async updateImages(userid,userimage) {
         try {
+            const user = await UserModel.findOne({ userid });
+            if (!user) {
+                throw new Error("user not found");
+            }
+            const oldImage = user.userimage;
             const updateimage = await UserModel.findOneAndUpdate(
                 { userid },
                 { $set: {userimage } },
                 { new: true }
             );
-            return updateimage;
+            return { updateimage, oldImage };
         } catch (error) {
             throw error;
         }
@@ -53,12 +55,17 @@ class UserServices {
 
     static async updatecover(userid,coverimage) {
         try {
+            const user = await UserModel.findOne({ userid });
+            if (!user) {
+                throw new Error("user not found");
+            }
+            const oldImage = user.coverimage;
             const updatedCover= await UserModel.findOneAndUpdate(
                 { userid },
                 { $set: {coverimage } },
                 { new: true }
             );
-            return updatedCover;
+            return { updatedCover, oldImage };
         } catch (error) {
             throw error;
         }

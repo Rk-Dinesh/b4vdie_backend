@@ -1,5 +1,7 @@
 const UserModel = require('../model/user_model');
 const CommunityService = require('../services/community_service');
+const fs = require('fs');
+const path = require("path");
 
 exports.community = async(req,res,next) => {
     try {
@@ -83,6 +85,15 @@ exports.delete = async(req, res, next)=>{
     try{
         const{community_id} = req.query;
         const deleteData = await CommunityService.deletecommunity(community_id);
+
+        if (deleteData && deleteData.image) {
+            const filePath = path.join(__dirname, '../community', deleteData.image);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting file: ${err.message}`);
+                }
+            });
+        }
         res.status(200).json(deleteData)
     }catch(error){
         next(error)

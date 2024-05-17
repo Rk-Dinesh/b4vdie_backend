@@ -1,4 +1,6 @@
 const ClubPostServices = require('../services/clubpost_services');
+const fs = require('fs');
+const path = require("path");
 
 
 exports.createpost = async (req, res, next) => {
@@ -70,16 +72,37 @@ exports.delete = async (req, res, next) => {
     try {
         const { clubpost_id } = req.query;
         const post = await ClubPostServices.clubpost_id(clubpost_id);
-        res.status(200).json(post)
+
+        if (post && post.clubpostimage) {
+            const filePath = path.join(__dirname, '../clubpost', post.clubpostimage);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting file: ${err.message}`);
+                }
+            });
+        }
+
+        res.status(200).json(post);
     } catch (error) {
-        next(error)
+        next(error);
     }
 }
+
 
 exports.deleteid = async (req, res, next) => {
     try {
         const { club_id } = req.query;
         const post = await ClubPostServices.club_id(club_id);
+
+        if (post && post.clubpostimage) {
+            const filePath = path.join(__dirname, '../clubpost', post.clubpostimage);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting file: ${err.message}`);
+                }
+            });
+        }
+        
         res.status(200).json(post)
     } catch (error) {
         next(error)

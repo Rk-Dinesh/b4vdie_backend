@@ -29,7 +29,12 @@ app.use(
   })
 );
 
-app.use(express.static("img"));
+app.use(express.static("image"));
+app.use(express.static("club"));
+app.use(express.static("clubpost"));
+app.use(express.static("community"));
+
+
 app.use(body_parser.json());
 
 app.use("/", Router);

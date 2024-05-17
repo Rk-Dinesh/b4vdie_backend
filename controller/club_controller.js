@@ -1,4 +1,6 @@
 const ClubService = require('../services/club_services');
+const path = require('path');
+const fs = require('fs');
 
 exports.createClub = async (req, res, next) => {
     try {
@@ -24,12 +26,11 @@ exports.createClub = async (req, res, next) => {
 exports.updateImage = async (req, res, next) => {
     try {
         const { club_id } = req.query;
-        const { clubimage} = req.files;
+        const { clubimage } = req.files;
 
-        const updatedClub = await ClubService.updateImages(
+        const { updatedClub, oldImage } = await ClubService.updateImages(
             club_id,
-            clubimage[0].filename,
-            
+            clubimage[0].filename
         );
 
         const data = {
@@ -37,18 +38,28 @@ exports.updateImage = async (req, res, next) => {
             clubimage: clubimage[0].filename,
         };
 
+        if (oldImage) {
+            const oldImagePath = path.join(__dirname, '../club', oldImage);
+            fs.unlink(oldImagePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting old image file: ${err.message}`);
+                }
+            });
+        }
+
         res.status(200).json(data);
     } catch (error) {
         next(error);
     }
 };
 
+
 exports.updatecover= async (req, res, next) => {
     try {
         const { club_id } = req.query;
         const { clubcover } = req.files;
 
-        const updatedClub = await ClubService.updatecover(
+        const { updatedClub, oldImage } = await ClubService.updatecover(
             club_id,
             clubcover[0].filename
         );
@@ -57,6 +68,15 @@ exports.updatecover= async (req, res, next) => {
             club_id,
             clubcoverimage: clubcover[0].filename
         };
+
+        if (oldImage) {
+            const oldImagePath = path.join(__dirname, '../club', oldImage);
+            fs.unlink(oldImagePath, (err) => {
+                if (err) {
+                    console.error(`Error deleting old image file: ${err.message}`);
+                }
+            });
+        }
 
         res.status(200).json(data);
     } catch (error) {
@@ -81,6 +101,7 @@ exports.update = async (req, res, next) => {
             clubdesc : clubdesc,
         };
 
+
         res.status(200).json(data);
     } catch (error) {
         next(error);
@@ -88,15 +109,32 @@ exports.update = async (req, res, next) => {
 };
 
 
-exports.delete = async(req, res, next)=>{
-    try{
-        const{club_id} = req.query;
+exports.delete = async (req, res, next) => {
+    try {
+        const { club_id } = req.query;
         const deleteData = await ClubService.deleteclub(club_id);
-        res.status(200).json(deleteData)
-    }catch(error){
-        next(error)
+
+        if (deleteData) {
+            const imagePaths = [
+                path.join(__dirname, '../club', deleteData.clubimage),
+                path.join(__dirname, '../club', deleteData.clubcoverimage)
+            ];
+
+            imagePaths.forEach(filePath => {
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error(`Error deleting file: ${err.message}`);
+                    }
+                });
+            });
+        }
+
+        res.status(200).json(deleteData);
+    } catch (error) {
+        next(error);
     }
-}
+};
+
 
 exports.get = async(req,res,next) => {
     try {
