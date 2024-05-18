@@ -111,3 +111,153 @@
     tripid:
     img_name:
 }
+
+
+
+const express = require('express');
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream');
+const path = require('path');
+
+// Initialize Express
+const app = express();
+
+// Connect to MongoDB
+const mongoURI = 'your-mongodb-uri';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+const conn = mongoose.connection;
+
+// Initialize GridFS stream
+let gfs;
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+});
+
+// Create storage engine
+const storage = new GridFsStorage({
+  url: mongoURI,
+  file: (req, file) => {
+    return {
+      filename: file.originalname,
+      bucketName: 'uploads'
+    };
+  }
+});
+
+const upload = multer({ storage });
+
+// POST route to upload file
+app.post('/upload', upload.single('file'), (req, res) => {
+  res.json({ file: req.file });
+});
+
+// GET route to retrieve file
+app.get('/file/:filename', (req, res) => {
+  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+    if (!file || file.length === 0) {
+      return res.status(404).json({
+        message: 'File not found'
+      });
+    }
+
+    const readstream = gfs.createReadStream(file.filename);
+    readstream.pipe(res);
+  });
+});
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
+});
+
+
+const express = require('express');
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+const mongoose = require('mongoose');
+const Grid = require('gridfs-stream');
+const path = require('path');
+
+// Initialize Express
+const app = express();
+
+// Connect to MongoDB
+const mongoURI = 'your-mongodb-uri';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+const conn = mongoose.connection;
+
+// Initialize GridFS stream
+let gfs;
+conn.once('open', () => {
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+});
+
+// Create storage engine for Multer
+const storage = new GridFsStorage({
+  url: mongoURI,
+  file: (req, file) => {
+    return {
+      filename: file.originalname,
+      bucketName: 'uploads'
+    };
+  }
+});
+
+const upload = multer({ storage });
+
+// Define your schema
+const Schema = mongoose.Schema;
+
+const yourSchema = new Schema({
+  name: String,
+  type: String,
+  date: Date,
+  image: String // Assuming you'll store the filename in the 'image' field
+});
+
+// Create a model based on the schema
+const YourModel = mongoose.model('YourModel', yourSchema);
+
+// POST route to upload file and save other fields
+app.post('/upload', upload.single('file'), (req, res) => {
+  // Create a new document with the file information and other fields
+  const newDocument = new YourModel({
+    name: req.body.name,
+    type: req.body.type,
+    date: req.body.date,
+    image: req.file.filename // Assuming you're storing the filename in the 'image' field
+  });
+
+  // Save the document to the database
+  newDocument.save((err, savedDoc) => {
+    if (err) {
+      return res.status(500).json({ error: err });
+    }
+    res.json({ document: savedDoc });
+  });
+});
+
+// GET route to retrieve file
+app.get('/file/:filename', (req, res) => {
+  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+    if (!file || file.length === 0) {
+      return res.status(404).json({
+        message: 'File not found'
+      });
+    }
+
+    const readstream = gfs.createReadStream(file.filename);
+    readstream.pipe(res);
+  });
+});
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
+});

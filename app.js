@@ -1,6 +1,7 @@
 const express = require(`express`);
 const cors = require("cors");
 const body_parser = require("body-parser");
+const path = require("path");
 
 const Router = require("./routers/router");
 const userrouter = require("./routers/user_router");
@@ -15,6 +16,8 @@ const pitstoprouter = require("./routers/pitstop_router");
 const transportrouter = require("./routers/transport_router");
 const tripalertrouter = require("./routers/tripalert_router");
 const triprouter = require("./routers/trip_router");
+const mapimagerouter = require("./routers/mapimage_router");
+const mapvideorouter = require("./routers/mapvideo_router");
 
 const app = express();
 
@@ -29,11 +32,12 @@ app.use(
   })
 );
 
-app.use(express.static("image"));
-app.use(express.static("club"));
-app.use(express.static("clubpost"));
-app.use(express.static("community"));
-
+app.use(express.static(path.join(__dirname, "image")));
+app.use(express.static(path.join(__dirname, "club")));
+app.use(express.static(path.join(__dirname, "clubpost")));
+app.use(express.static(path.join(__dirname, "community")));
+app.use(express.static(path.join(__dirname, "mapimage")));
+app.use(express.static(path.join(__dirname, "mapvideo")));
 
 app.use(body_parser.json());
 
@@ -50,5 +54,7 @@ app.use("/pitstop", pitstoprouter);
 app.use("/transport", transportrouter);
 app.use("/tripalert", tripalertrouter);
 app.use("/trip", triprouter);
+app.use("/mapimage", mapimagerouter);
+app.use("/mapvideo", mapvideorouter);
 
 module.exports = app;
