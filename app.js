@@ -18,6 +18,7 @@ const tripalertrouter = require("./routers/tripalert_router");
 const triprouter = require("./routers/trip_router");
 const mapimagerouter = require("./routers/mapimage_router");
 const mapvideorouter = require("./routers/mapvideo_router");
+const videorouter = require("./routers/video_router");
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(express.static(path.join(__dirname, "clubpost")));
 app.use(express.static(path.join(__dirname, "community")));
 app.use(express.static(path.join(__dirname, "mapimage")));
 app.use(express.static(path.join(__dirname, "mapvideo")));
+app.use(express.static(path.join(__dirname, "video")));
 
 app.use(body_parser.json());
 
@@ -56,5 +58,6 @@ app.use("/tripalert", tripalertrouter);
 app.use("/trip", triprouter);
 app.use("/mapimage", mapimagerouter);
 app.use("/mapvideo", mapvideorouter);
+app.use("/video", videorouter);
 
 module.exports = app;
