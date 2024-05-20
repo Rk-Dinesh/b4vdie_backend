@@ -2,10 +2,10 @@ const TransportServices = require('../services/transport_services');
 
 exports.transport = async(req,res,next) => {
     try {
-        const {transportid,tripid,mode_of_transport,from,to} = req.body;
+        const {transportid,tripid,mode_of_transport,from,to,orgin_lat,orgin_lon,des_lat,des_lon} = req.body;
 
-        const Data = TransportServices.createtransport(transportid,tripid,mode_of_transport,from,to);
-        let transportData = {transportid,tripid,mode_of_transport : mode_of_transport,from : from,to : to};
+        const Data = TransportServices.createtransport(transportid,tripid,mode_of_transport,from,to,orgin_lat,orgin_lon,des_lat,des_lon);
+        let transportData = {transportid,tripid,mode_of_transport : mode_of_transport,from : from,to : to,orgin_lat:orgin_lat,orgin_lon:orgin_lon,des_lat:des_lat,des_lon:des_lon};
 
         res.status(200).json(transportData);
 
@@ -16,9 +16,9 @@ exports.transport = async(req,res,next) => {
 
 exports.update = async (req,res,next) => {
     try {
-        const {transportid,tripid,mode_of_transport,from,to} = req.body;
+        const {transportid,tripid,mode_of_transport,from,to,orgin_lat,orgin_lon,des_lat,des_lon} = req.body;
 
-        const updateData = await TransportServices.updatetransport(transportid,tripid,mode_of_transport,from,to);
+        const updateData = await TransportServices.updatetransport(transportid,tripid,mode_of_transport,from,to,orgin_lat,orgin_lon,des_lat,des_lon);
 
         res.status(200).json(updateData);
     } catch (error) {
