@@ -90,8 +90,8 @@ exports.get = async(req,res,next) => {
 
 exports.getMarkerId = async(req,res,next) => {
     try {
-        const {marker_id} = req.query;
-        const map = await MapImageServices.getMarkerId(marker_id);
+        const {tripid} = req.query;
+        const map = await MapImageServices.getMarkerId(tripid);
         res.status(200).json(map)
     } catch (error) {
         next(error);

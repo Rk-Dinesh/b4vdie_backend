@@ -91,8 +91,8 @@ exports.get = async(req,res,next) => {
 
 exports.getMarkerIdv = async(req,res,next) => {
     try {
-        const {marker_idv} = req.query;
-        const map = await MapVideoServices.getMarkerIdV(marker_idv);
+        const {tripid} = req.query;
+        const map = await MapVideoServices.getMarkerIdV(tripid);
         res.status(200).json(map)
     } catch (error) {
         next(error);

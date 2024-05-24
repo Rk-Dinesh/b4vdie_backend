@@ -69,9 +69,9 @@ class MapVideoServices {
 
     
 
-    static async getMarkerIdV(marker_idv) {
+    static async getMarkerIdV(tripid) {
         try {
-            return await MapVideoModel.findOne({ marker_idv })
+            return await MapVideoModel.find({ tripid })
         } catch (error) {
             throw error
         }

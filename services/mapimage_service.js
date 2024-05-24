@@ -69,9 +69,9 @@ class MapImageServices {
 
     
 
-    static async getMarkerId(marker_id) {
+    static async getMarkerId(tripid) {
         try {
-            return await MapImageModel.findOne({ marker_id })
+            return await MapImageModel.find({ tripid })
         } catch (error) {
             throw error
         }
