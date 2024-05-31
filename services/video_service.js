@@ -65,7 +65,7 @@ class VideoServices {
 
     static async getVideoIdtrip(tripid) {
         try {
-            return await VideoModel.findOne({ tripid })
+            return await VideoModel.find({ tripid })
         } catch (error) {
             throw error
         }
