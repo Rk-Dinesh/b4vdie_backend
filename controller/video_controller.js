@@ -86,3 +86,13 @@ exports.getVideoId = async(req,res,next) => {
     }
 }
 
+exports.getVideoIdtrip= async(req,res,next) => {
+    try {
+        const {tripid} = req.query;
+        const vid = await VideoServices.getVideoIdtrip(tripid);
+        res.status(200).json(vid)
+    } catch (error) {
+        next(error);
+    }
+}
+

@@ -32,6 +32,7 @@ videorouter.post('/video',video, VideoController.register);
 videorouter.delete('/deletevideo', VideoController.delete);
 videorouter.put('/updatevideo', video,VideoController.updateVideo);
 videorouter.get('/getmapvId', VideoController.getVideoId);
+videorouter.get('/getmapvIdtrip', VideoController.getVideoIdtrip);
 videorouter.get('/getallvideo', VideoController.get);
 
 
