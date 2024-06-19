@@ -3,10 +3,10 @@ const UserModel = require("../model/user_model");
 const IdcodeServices = require("./idcode_services");
 
 class ClubPostServices {
-    static async registerClubPost(club_id, userid, like,des,date,report,filename) {
+    static async registerClubPost(club_id, userid, like,des,date,reporters,report,filename) {
         try {
             var clubpost_id = await IdcodeServices.generateCode("ClubPostId");
-            const createpost = new ClubPostModel({ club_id, clubpost_id, userid, like,des,date,report,clubpostimage : filename });
+            const createpost = new ClubPostModel({ club_id, clubpost_id, userid, like,des,date,reporters,report,clubpostimage : filename });
             return await createpost.save();
         } catch (err) {
             throw err;
@@ -108,17 +108,27 @@ class ClubPostServices {
         }
     }
 
-    static async update(clubpost_id,report) {
+    static async report(clubpost_id, userid, reporters) {
         try {
-            var query = { clubpost_id: clubpost_id };
-            var values = { $set: {report:report} };
-
-            return await ClubPostModel.updateOne(query, values)
-
-        } catch (error) {
-            throw error
+            const clubPost = await ClubPostModel.findOne({ clubpost_id });
+    
+            if (!clubPost) {
+                return { success: false, message: 'Club post not found' };
+            }
+    
+            if (clubPost.report.includes(userid)) {
+                return { success: false, message: 'User already liked the post' };
+            }
+    
+            clubPost.report.push(userid);
+            clubPost.reporters = reporters; // update the reporters field
+            await clubPost.save();
+    
+            return { success: true, message: 'Like added successfully', clubPost };
+        } catch (err) {
+            throw err
         }
-    }
+    };
 };
 
 module.exports = ClubPostServices;

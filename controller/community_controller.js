@@ -5,11 +5,11 @@ const path = require("path");
 
 exports.community = async(req,res,next) => {
     try {
-        const {userid,community_id,date,desc,like,report} = req.body;
+        const {userid,community_id,date,desc,like,reporters,report} = req.body;
         const {filename} = req.file;
-        const community = await CommunityService.createcommunity(userid,date,desc,like,report,filename);
+        const community = await CommunityService.createcommunity(userid,date,desc,like,reporters,report,filename);
         
-        let data = {userid, community_id,date : date, desc : desc,like:like,report:report, image : req.file.filename};
+        let data = {userid, community_id,date : date, desc : desc,like:like,reporters:reporters,report:report, image : req.file.filename};
         res.status(200).json(data);
     } catch (error) {
         next (error)
@@ -122,13 +122,18 @@ exports.getfollowersDetails = async (req, res, next) => {
     }
   };
 
-  exports.Update = async (req,res, next) => {
-    try {
-        const { community_id,report} = req.body;
-        const updateData = await CommunityService.update(community_id,report);
-        res.status(200).json(updateData)
-    } catch (error) {
-        next (error);
-    }
+  exports.update = async (req, res,next) => {
+    const { userid,reporters } = req.body;
+    const { community_id } = req.params;
 
-}
+    try {
+        const result = await CommunityService.report(community_id, userid, reporters); // use report method instead
+
+        if (!result.success) {
+            return res.status(result.success ? 200 : 400).json({ message: result.message });
+        }
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err)
+    }
+};

@@ -5,11 +5,11 @@ const path = require("path");
 
 exports.createpost = async (req, res, next) => {
     try {
-        const { club_id, clubpost_id, userid, like,des ,date,report} = req.body;
+        const { club_id, clubpost_id, userid, like,des ,date,reporters,report} = req.body;
         const {filename} = req.file;
 
-        const Res = await ClubPostServices.registerClubPost(club_id, userid, like,des,date,report,filename);
-        let Post = { club_id, clubpost_id, userid, like, des,date,report, clubpostimage : req.file.filename };
+        const Res = await ClubPostServices.registerClubPost(club_id, userid, like,des,date,reporters,report,filename);
+        let Post = { club_id, clubpost_id, userid, like, des,date,reporters,report, clubpostimage : req.file.filename };
         res.status(200).json(Post)
 
     } catch (error) {
@@ -129,13 +129,18 @@ exports.getOnePost = async (req, res, next) => {
     }
 }
 
-exports.Update = async (req,res, next) => {
-    try {
-        const { clubpost_id,report} = req.body;
-        const updateData = await ClubPostServices.update(clubpost_id,report);
-        res.status(200).json(updateData)
-    } catch (error) {
-        next (error);
-    }
+exports.update = async (req, res,next) => {
+    const { userid,reporters } = req.body;
+    const { clubpost_id } = req.params;
 
-}
+    try {
+        const result = await ClubPostServices.report(clubpost_id, userid, reporters); // use report method instead
+
+        if (!result.success) {
+            return res.status(result.success ? 200 : 400).json({ message: result.message });
+        }
+        return res.status(200).json(result);
+    } catch (err) {
+        next(err)
+    }
+};

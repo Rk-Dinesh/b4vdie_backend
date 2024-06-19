@@ -29,8 +29,11 @@ const ClubpostSchema = new Schema({
         type: String,
         required: true
     },
-    report:{
+    reporters:{
         type: String
+    },
+    report:{
+        type: [String]
     },
     clubpostimage : {
         type : String,

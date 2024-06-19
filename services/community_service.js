@@ -4,7 +4,7 @@ const IdcodeServices = require('../services/idcode_services')
 
 class CommunityService {
 
-    static async createcommunity (userid,date,desc,like,report,filename) {
+    static async createcommunity (userid,date,desc,like,reporters,report,filename) {
         try {
             var community_id = await IdcodeServices.generateCode("CommunityId");
             const newimage = new CommunityModel({
@@ -13,6 +13,7 @@ class CommunityService {
                 date : date,
                 desc : desc,
                 like : like,
+                reporters:reporters,
                 report:report,
                 image : filename
             })
@@ -100,17 +101,27 @@ class CommunityService {
         }
     }
 
-    static async update(community_id,report) {
+    static async report(community_id, userid, reporters) {
         try {
-            var query = { community_id: community_id };
-            var values = { $set: {report:report} };
-
-            return await CommunityModel.updateOne(query, values)
-
-        } catch (error) {
-            throw error
+            const communityPost = await CommunityModel.findOne({ community_id });
+    
+            if (!communityPost) {
+                return { success: false, message: 'CommunityPost not found' };
+            }
+    
+            if (communityPost.report.includes(userid)) {
+                return { success: false, message: 'User already liked the post' };
+            }
+    
+            communityPost.report.push(userid);
+            communityPost.reporters = reporters; // update the reporters field
+            await communityPost.save();
+    
+            return { success: true, message: 'Like added successfully', communityPost };
+        } catch (err) {
+            throw err
         }
-    }
+    };
 
 };
 

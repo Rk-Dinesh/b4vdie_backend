@@ -21,8 +21,11 @@ const CommunitySchema = new Schema({
         type : String,
         required : true,
     },
-    report : {
-        type : String,
+    reporters:{
+        type: String
+    },
+    report:{
+        type: [String]
     },
     like : {
         type: [String],
