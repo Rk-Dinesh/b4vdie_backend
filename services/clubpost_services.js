@@ -3,10 +3,10 @@ const UserModel = require("../model/user_model");
 const IdcodeServices = require("./idcode_services");
 
 class ClubPostServices {
-    static async registerClubPost(club_id, userid, like,des,date,filename) {
+    static async registerClubPost(club_id, userid, like,des,date,report,filename) {
         try {
             var clubpost_id = await IdcodeServices.generateCode("ClubPostId");
-            const createpost = new ClubPostModel({ club_id, clubpost_id, userid, like,des,date,clubpostimage : filename });
+            const createpost = new ClubPostModel({ club_id, clubpost_id, userid, like,des,date,report,clubpostimage : filename });
             return await createpost.save();
         } catch (err) {
             throw err;
@@ -103,6 +103,18 @@ class ClubPostServices {
         try {
 
             return await ClubPostModel.find({ clubpost_id })
+        } catch (error) {
+            throw error
+        }
+    }
+
+    static async update(clubpost_id,report) {
+        try {
+            var query = { clubpost_id: clubpost_id };
+            var values = { $set: {report:report} };
+
+            return await ClubPostModel.updateOne(query, values)
+
         } catch (error) {
             throw error
         }

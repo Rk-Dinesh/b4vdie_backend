@@ -36,6 +36,7 @@ clubpostrouter.get('/getonepost', ClubPostController.getOnePost);
 clubpostrouter.post('/like/:clubpost_id',ClubPostController.like);
 clubpostrouter.post('/unlike/:clubpost_id',ClubPostController.unlike);
 clubpostrouter.post('/comment/:clubpost_id',ClubPostController.addComment);
+clubpostrouter.put('/report',ClubPostController.Update);
 
 clubpostrouter.use(deleteFileOnError);
 

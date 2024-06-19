@@ -5,11 +5,11 @@ const path = require("path");
 
 exports.community = async(req,res,next) => {
     try {
-        const {userid,community_id,date,desc,like} = req.body;
+        const {userid,community_id,date,desc,like,report} = req.body;
         const {filename} = req.file;
-        const community = await CommunityService.createcommunity(userid,date,desc,like,filename);
+        const community = await CommunityService.createcommunity(userid,date,desc,like,report,filename);
         
-        let data = {userid, community_id,date : date, desc : desc,like:like, image : req.file.filename};
+        let data = {userid, community_id,date : date, desc : desc,like:like,report:report, image : req.file.filename};
         res.status(200).json(data);
     } catch (error) {
         next (error)
@@ -121,3 +121,14 @@ exports.getfollowersDetails = async (req, res, next) => {
       next(error);
     }
   };
+
+  exports.Update = async (req,res, next) => {
+    try {
+        const { community_id,report} = req.body;
+        const updateData = await CommunityService.update(community_id,report);
+        res.status(200).json(updateData)
+    } catch (error) {
+        next (error);
+    }
+
+}

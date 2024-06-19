@@ -34,6 +34,7 @@ communitypostrouter.get('/getonecommunitypost', CommunityController.getOneCommun
 communitypostrouter.post('/likecommunity/:community_id',CommunityController.like);
 communitypostrouter.post('/unlikecommunity/:community_id',CommunityController.unlike);
 communitypostrouter.get('/post/:loggedInUserId', CommunityController.getfollowersDetails);
+communitypostrouter.put('/report', CommunityController.Update);
 
 communitypostrouter.use(deleteFileOnError);
 

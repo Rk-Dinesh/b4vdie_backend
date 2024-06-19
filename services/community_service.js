@@ -4,7 +4,7 @@ const IdcodeServices = require('../services/idcode_services')
 
 class CommunityService {
 
-    static async createcommunity (userid,date,desc,like,filename) {
+    static async createcommunity (userid,date,desc,like,report,filename) {
         try {
             var community_id = await IdcodeServices.generateCode("CommunityId");
             const newimage = new CommunityModel({
@@ -13,6 +13,7 @@ class CommunityService {
                 date : date,
                 desc : desc,
                 like : like,
+                report:report,
                 image : filename
             })
             return await newimage.save();
@@ -94,6 +95,18 @@ class CommunityService {
         try {
             
             return await CommunityModel.find({community_id})
+        } catch (error) {
+            throw error
+        }
+    }
+
+    static async update(community_id,report) {
+        try {
+            var query = { community_id: community_id };
+            var values = { $set: {report:report} };
+
+            return await CommunityModel.updateOne(query, values)
+
         } catch (error) {
             throw error
         }

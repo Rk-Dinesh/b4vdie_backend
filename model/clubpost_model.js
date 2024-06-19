@@ -21,7 +21,6 @@ const ClubpostSchema = new Schema({
         type: [String],
         
     },
-
     des:{
         type:String,
         required:true
@@ -29,6 +28,9 @@ const ClubpostSchema = new Schema({
     date:{
         type: String,
         required: true
+    },
+    report:{
+        type: String
     },
     clubpostimage : {
         type : String,

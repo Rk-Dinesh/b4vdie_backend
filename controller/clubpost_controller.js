@@ -5,11 +5,11 @@ const path = require("path");
 
 exports.createpost = async (req, res, next) => {
     try {
-        const { club_id, clubpost_id, userid, like,des ,date} = req.body;
+        const { club_id, clubpost_id, userid, like,des ,date,report} = req.body;
         const {filename} = req.file;
 
-        const Res = await ClubPostServices.registerClubPost(club_id, userid, like,des,date,filename);
-        let Post = { club_id, clubpost_id, userid, like, des,date, clubpostimage : req.file.filename };
+        const Res = await ClubPostServices.registerClubPost(club_id, userid, like,des,date,report,filename);
+        let Post = { club_id, clubpost_id, userid, like, des,date,report, clubpostimage : req.file.filename };
         res.status(200).json(Post)
 
     } catch (error) {
@@ -127,4 +127,15 @@ exports.getOnePost = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+}
+
+exports.Update = async (req,res, next) => {
+    try {
+        const { clubpost_id,report} = req.body;
+        const updateData = await ClubPostServices.update(clubpost_id,report);
+        res.status(200).json(updateData)
+    } catch (error) {
+        next (error);
+    }
+
 }
